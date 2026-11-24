@@ -3,351 +3,98 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#1e40af">
-  <meta name="description" content="Aplikasi Pencatat Tugas Kuliah, Deadline Mata Kuliah & Proyek Mahasiswa">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Aplikasi Pencatat Tugas Kuliah Simpel & Minimalis">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="TugasKuliah">
-  <title>TugasKuliah - Pencatat Tugas & Deadline Mahasiswa</title>
+  <title>Tugas Kuliah</title>
   
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231e40af'><path d='M12 3L1 9l11 6 9-4.91V17h2V9L12 3z M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z'/></svg>">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
 </head>
 <body>
-  <div class="app-container">
-    <!-- Header Aplikasi Mahasiswa -->
-    <header class="app-header">
-      <div class="header-top">
-        <div class="brand">
-          <div class="brand-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-              <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-            </svg>
-          </div>
-          <div>
-            <h1 class="brand-title">TugasKuliah</h1>
-            <p class="brand-subtitle" id="currentDateText">Semester Aktif • Selasa, 24 Nov</p>
-          </div>
-        </div>
-        <div class="header-actions">
-          <button id="themeToggleBtn" class="icon-btn" title="Ganti Mode Gelap/Terang" aria-label="Toggle Theme">
-            <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-            <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-          </button>
-        </div>
+  <div class="app">
+    <!-- Header Simpel -->
+    <header class="header">
+      <div class="header-left">
+        <h1>Tugas Kuliah</h1>
+        <p id="taskCountText">Memuat tugas...</p>
       </div>
-
-      <!-- Kartu Ringkasan Beban Tugas & Deadline Mendekat -->
-      <div class="progress-card">
-        <div class="progress-info">
-          <div>
-            <span class="progress-label">Progres Tugas Semester Ini</span>
-            <div class="progress-count"><span id="doneCount">0</span> dari <span id="totalCount">0</span> tugas terkumpul</div>
-          </div>
-          <span class="progress-percent" id="progressPercent">0%</span>
-        </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="progressBarFill" style="width: 0%"></div>
-        </div>
-        <div class="urgent-banner" id="urgentBanner" style="display: none;">
-          <span class="urgent-icon">⚠️</span>
-          <span id="urgentText">Ada tugas kuliah yang mendekati deadline!</span>
-        </div>
-      </div>
-
-      <!-- Search Box -->
-      <div class="search-box">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input type="text" id="searchInput" placeholder="Cari nama tugas, matkul, dosen, instruksi..." autocomplete="off">
-        <button id="clearSearchBtn" class="clear-search-btn" style="display: none;">&times;</button>
-      </div>
-
-      <!-- Filter Mata Kuliah Horizontal Scroll -->
-      <div class="course-filter-bar">
-        <div class="course-scroll-wrapper">
-          <div class="category-chips" id="courseChips">
-            <button class="chip active" data-course="semua">Semua Matkul</button>
-            <!-- Diisi dinamis oleh JS -->
-          </div>
-        </div>
-        <button id="manageCoursesBtn" class="icon-chip-btn" title="Kelola Mata Kuliah" aria-label="Tambah Mata Kuliah">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      <div class="header-right">
+        <button id="themeToggleBtn" class="icon-btn" title="Ganti Tema" aria-label="Ganti Tema">
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+        <button id="menuBtn" class="icon-btn" title="Menu Cadangan" aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
         </button>
       </div>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="app-main">
-      <!-- Status Tabs -->
-      <div class="status-tabs">
-        <button class="tab-btn active" data-filter="aktif">
-          Belum Kumpul <span class="badge" id="badgeActive">0</span>
-        </button>
-        <button class="tab-btn" data-filter="mendesak">
-          Mendesak ⏰ <span class="badge" id="badgeUrgent">0</span>
-        </button>
-        <button class="tab-btn" data-filter="kelompok">
-          Kelompok 👥
-        </button>
-        <button class="tab-btn" data-filter="selesai">
-          Selesai ✅ <span class="badge" id="badgeDone">0</span>
-        </button>
-      </div>
-
-      <!-- Task List Container -->
-      <div id="taskList" class="task-list">
-        <!-- Rendered via JavaScript -->
-      </div>
-
-      <!-- Empty State -->
-      <div id="emptyState" class="empty-state" style="display: none;">
-        <div class="empty-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-          </svg>
+    <!-- Quick Add Input (Simpel di bagian atas) -->
+    <div class="quick-add-card">
+      <form id="quickAddForm">
+        <div class="quick-add-row">
+          <input type="text" id="quickTitleInput" placeholder="+ Tambah tugas baru..." autocomplete="off" required>
+          <button type="submit" class="add-submit-btn">Tambah</button>
         </div>
-        <h3 id="emptyTitle">Tidak Ada Tugas Kuliah</h3>
-        <p id="emptyDesc">Semua tugas kuliah beres atau belum ada tugas yang dicatat. Nikmati waktu santaimu! ☕</p>
+        <div class="quick-add-options">
+          <input type="text" id="quickCourseInput" placeholder="Mata Kuliah (opsional)" list="courseList">
+          <datalist id="courseList"></datalist>
+          <input type="date" id="quickDateInput" title="Batas Waktu">
+        </div>
+      </form>
+    </div>
+
+    <!-- Filter Tab Simpel -->
+    <div class="filter-bar">
+      <div class="segmented-control" id="filterTabs">
+        <button class="seg-btn active" data-filter="aktif">Belum Selesai</button>
+        <button class="seg-btn" data-filter="selesai">Selesai</button>
+        <button class="seg-btn" data-filter="semua">Semua</button>
+      </div>
+    </div>
+
+    <!-- Daftar Tugas -->
+    <main class="main-content">
+      <div id="taskList" class="task-list">
+        <!-- Rendered by JavaScript -->
+      </div>
+
+      <!-- State Kosong Bersih -->
+      <div id="emptyState" class="empty-state" style="display: none;">
+        <p id="emptyText">Tidak ada tugas. Bersih & santai! ☕</p>
       </div>
     </main>
 
-    <!-- Floating Action Button (FAB) -->
-    <button id="openAddModalBtn" class="fab-btn" title="Tambah Tugas Kuliah Baru" aria-label="Tambah Tugas">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-      </svg>
-    </button>
-
-    <!-- Bottom Navigation Bar Mobile -->
-    <nav class="bottom-nav">
-      <button class="nav-item active" data-nav="tasks">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-          <polyline points="14 2 14 8 20 8"></polyline>
-          <line x1="16" y1="13" x2="8" y2="13"></line>
-          <line x1="16" y1="17" x2="8" y2="17"></line>
-        </svg>
-        <span>Tugas</span>
-      </button>
-      <button class="nav-item" data-nav="matkul">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-        </svg>
-        <span>Mata Kuliah</span>
-      </button>
-      <button class="nav-item" data-nav="stats">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M18 20V10"></path>
-          <path d="M12 20V4"></path>
-          <path d="M6 20v-6"></path>
-        </svg>
-        <span>Statistik</span>
-      </button>
-      <button class="nav-item" data-nav="settings">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="3"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-        </svg>
-        <span>Backup</span>
-      </button>
-    </nav>
-
-    <!-- Modal Form Tambah / Edit Tugas Kuliah -->
-    <div id="taskModal" class="modal-backdrop">
+    <!-- Modal Menu Ringkas (Backup / Export) -->
+    <div id="menuModal" class="modal-backdrop">
       <div class="modal-card">
         <div class="modal-header">
-          <h2 id="modalTitle">Tambah Tugas Kuliah</h2>
-          <button id="closeModalBtn" class="close-btn" aria-label="Tutup">&times;</button>
-        </div>
-        <form id="taskForm" class="modal-body">
-          <input type="hidden" id="editTaskId">
-          
-          <div class="form-group">
-            <label for="taskTitleInput">Judul Tugas Kuliah <span class="required">*</span></label>
-            <input type="text" id="taskTitleInput" placeholder="Contoh: Makalah Etika Profesi / Laporan Praktikum Modul 2" required autofocus>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group flex-1">
-              <label for="taskCourseSelect">Mata Kuliah <span class="required">*</span></label>
-              <select id="taskCourseSelect" required>
-                <!-- Generated by JS -->
-              </select>
-            </div>
-
-            <div class="form-group flex-1">
-              <label for="taskTypeSelect">Jenis Tugas</label>
-              <select id="taskTypeSelect">
-                <option value="individu">📝 Tugas Individu</option>
-                <option value="kelompok">👥 Tugas Kelompok</option>
-                <option value="praktikum">🧪 Praktikum / Lab</option>
-                <option value="proyek">💻 Proyek / Koding</option>
-                <option value="makalah">📄 Makalah / Paper</option>
-                <option value="presentasi">📊 Presentasi PPT</option>
-                <option value="ujian">🎯 Kuis / UTS / UAS</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group flex-1">
-              <label for="taskDueDateInput">Batas Pengumpulan (Deadline) <span class="required">*</span></label>
-              <input type="date" id="taskDueDateInput" required>
-            </div>
-            <div class="form-group flex-1">
-              <label for="taskDueTimeInput">Pukul (Jam Deadline)</label>
-              <input type="time" id="taskDueTimeInput" value="23:59">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group flex-1">
-              <label for="taskPrioritySelect">Tingkat Urgensi</label>
-              <select id="taskPrioritySelect">
-                <option value="sedang">🟡 Sedang</option>
-                <option value="tinggi">🔴 Sangat Penting (Bobot Besar)</option>
-                <option value="rendah">🟢 Santai / Ringan</option>
-              </select>
-            </div>
-            <div class="form-group flex-1">
-              <label for="taskLecturerInput">Nama Dosen (Opsional)</label>
-              <input type="text" id="taskLecturerInput" placeholder="Contoh: Pak Budi, M.Kom">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="taskLinkInput">Tautan Pengumpulan / LMS Kampus (Opsional)</label>
-            <input type="url" id="taskLinkInput" placeholder="https://classroom.google.com/... atau link Drive/LMS">
-          </div>
-
-          <div class="form-group">
-            <label for="taskNotesInput">Petunjuk Tugas / Catatan Tambahan</label>
-            <textarea id="taskNotesInput" rows="3" placeholder="Contoh: Format PDF maks 10MB, Times New Roman 12, cantumkan NIM & Anggota Kelompok..."></textarea>
-          </div>
-
-          <div class="modal-actions">
-            <button type="button" id="cancelModalBtn" class="btn btn-secondary">Batal</button>
-            <button type="submit" class="btn btn-primary" id="saveTaskBtn">Simpan Tugas</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Modal Kelola Mata Kuliah -->
-    <div id="courseModal" class="modal-backdrop">
-      <div class="modal-card">
-        <div class="modal-header">
-          <h2>📚 Kelola Mata Kuliah</h2>
-          <button class="close-course-btn close-btn">&times;</button>
+          <h3>Menu & Cadangan</h3>
+          <button id="closeMenuBtn" class="close-btn">&times;</button>
         </div>
         <div class="modal-body">
-          <form id="addCourseForm" class="add-course-row">
-            <input type="text" id="newCourseName" placeholder="Nama Mata Kuliah Baru..." required>
-            <button type="submit" class="btn btn-primary btn-sm">+ Tambah</button>
-          </form>
-
-          <h3 class="section-title">Daftar Mata Kuliah Semester Ini:</h3>
-          <div id="courseManagerList" class="course-manager-list">
-            <!-- Rendered by JS -->
-          </div>
+          <button id="exportBtn" class="menu-action-btn">
+            💾 Unduh Cadangan Data (JSON)
+          </button>
+          <label class="menu-action-btn file-upload-label">
+            📥 Pulihkan Data dari File
+            <input type="file" id="importFileInput" accept=".json" style="display: none;">
+          </label>
+          <button id="clearAllBtn" class="menu-action-btn danger">
+            🗑️ Hapus Semua Tugas
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Modal View: Statistik Akademik -->
-    <div id="statsModal" class="modal-backdrop">
-      <div class="modal-card">
-        <div class="modal-header">
-          <h2>📊 Statistik Tugas Kuliah</h2>
-          <button class="close-stats-btn close-btn">&times;</button>
-        </div>
-        <div class="modal-body stats-body">
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-number text-blue" id="statTotal">0</div>
-              <div class="stat-title">Total Tugas Kuliah</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-number text-green" id="statCompleted">0</div>
-              <div class="stat-title">Sudah Terkumpul</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-number text-orange" id="statPending">0</div>
-              <div class="stat-title">Masih Dikerjakan</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-number text-red" id="statOverdue">0</div>
-              <div class="stat-title">Lewat Deadline</div>
-            </div>
-          </div>
-
-          <h3 class="section-title">Beban Tugas per Mata Kuliah</h3>
-          <div id="courseStatsList" class="category-stats-list">
-            <!-- Rendered by JS -->
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal View: Backup & Pengaturan -->
-    <div id="settingsModal" class="modal-backdrop">
-      <div class="modal-card">
-        <div class="modal-header">
-          <h2>⚙️ Backup Data Kuliah</h2>
-          <button class="close-settings-btn close-btn">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="setting-item">
-            <div class="setting-text">
-              <h4>Cadangkan Data (Backup JSON)</h4>
-              <p>Simpan data tugas dan daftar matkul ke file lokal agar tidak hilang.</p>
-            </div>
-            <button id="exportBtn" class="btn btn-outline">Unduh Backup</button>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-text">
-              <h4>Pulihkan Data (Restore)</h4>
-              <p>Muat kembali data tugas dari file backup sebelumnya.</p>
-            </div>
-            <label class="btn btn-outline file-label">
-              Pilih File
-              <input type="file" id="importFileInput" accept=".json" style="display: none;">
-            </label>
-          </div>
-
-          <div class="setting-item danger-zone">
-            <div class="setting-text">
-              <h4>Reset Semester Baru</h4>
-              <p>Hapus semua data tugas kuliah yang tersimpan untuk memulai semester baru.</p>
-            </div>
-            <button id="clearAllBtn" class="btn btn-danger">Hapus Semua</button>
-          </div>
-
-          <div class="pwa-install-section" id="pwaInstallCard" style="display: none;">
-            <div class="setting-text">
-              <h4>📱 Install ke HP Android</h4>
-              <p>Gunakan TugasKuliah layaknya aplikasi APK tanpa buka browser setiap saat.</p>
-            </div>
-            <button id="installAppBtn" class="btn btn-primary">Install Sekarang</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Toast Notification Popup -->
+    <!-- Toast Notification -->
     <div id="toast" class="toast">Notifikasi</div>
   </div>
 
@@ -356,7 +103,7 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('TugasKuliah ServiceWorker aktif:', reg.scope))
+          .then(reg => console.log('ServiceWorker siap:', reg.scope))
           .catch(err => console.log('ServiceWorker error:', err));
       });
     }
