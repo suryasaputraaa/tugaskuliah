@@ -1,0 +1,18 @@
+{
+  "name": "TugasKuliah - Pencatat Tugas Mahasiswa",
+  "short_name": "TugasKuliah",
+  "description": "Aplikasi pencatat tugas kuliah, deadline pengumpulan, dan manajemen mata kuliah",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0f1d",
+  "theme_color": "#1d4ed8",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
